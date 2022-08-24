@@ -132,33 +132,131 @@
             ></v-checkbox>
             
                 <v-btn
+                 
                     rounded
                     color="primary"
-                    :disabled="isButtonClick"
+                    @click ="handleSave"
                 >
-                 Save 
+                 Save
                 </v-btn>
-                    
+                 <td>
+                    <v-btn 
+                    rounded
+                    color="primary"
+                    @click="editUpdate"
+                    >
+                     edit
+
+                    </v-btn>
+
+                </td>
+
+            <v-simple-table fields="fields">
+            <template v-slot:default>
+            <thead>
+                <tr>
+                <th class="text-left">
+                    Name
+                </th>
+                <th class="text-left">
+                    Email
+                </th>
+                <th class="text-left">
+                    Choose the state
+                </th>
+                <th class="text-left">
+                    Gender
+                </th>
+                <th class="text-left">
+                    Feedback
+                </th>
+                  <th class="text-left">
+                    Actions
+                </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr
+                v-for="(item, index) in save"
+                :key="item.name"
+                >
+                <td>{{ item.name }}</td>
+                <td>{{ item.email }}</td>
+                
+                <td>{{item.select_the_state}}</td>
+                <td>{{item.radioGroup}}</td> 
+                <td>{{item.checkBoxes}}</td>
+                <td>
+                    <v-btn 
+                    depressed
+                    @click="deleteUser(index)">
+                      <i class="fa fa-trash"></i>
+                    </v-btn>
+                </td>
+                <td>
+                    <v-btn 
+                    depressed
+                    @click="editUser(index)">
+                     <i class="fa fa-edit" style="font-size:38px;color:blue"></i>
+
+                    </v-btn>
+                </td>
+               
+
+
+                <!-- <td>{{item.edit}}</td>
+                <td>{{item.delete}}</td>
+                <v-row
+                        align="center to right"
+                        justify="center"
+                       
+                >
+   
+                    <v-btn
+                    color="primary"
+                    depressed
+                    >
+                    <v-icon left>
+                    <font-awesome-icon icon="fa-solid fa-circle-trash" />
+
+                        
+                    </v-icon>
+                    Delete
+                    </v-btn>
+                </v-row> -->
+                <!-- <font-awesome-icon icon="fa-solid fa-circle-trash" />
+                {{ icons.mdiDelete }} -->
+                </tr>
+            </tbody>
+            </template>
+           </v-simple-table>
                 </div>
             </template>
             <script>
 
 
-            export default {
-            data: () => ({
-                
+        export default {
+         data ()  {
+            return {  
             lengthPassword: '',
             valid: true,
             name: '',
+            email: '',
             password:'',
             select_the_state: '',
             radioGroup: [],
             checkBoxes: [],
+            save: [],
+            edit:[],
+            rowId:0,
+            
+        
+              
             nameRules: [
                 v => !!v || 'Name is required',
                 v => (v && v.length <= 15) || 'Name must be less than 15 characters',
             ],
-            email: '',
+            
             emailRules: [
                 v => !!v || 'E-mail is required',
                 v => /.+@.+\..+/.test(v) || 'E-mail must be valid',
@@ -173,9 +271,10 @@
             },
             
         
-  
+              
             
-            }),
+             } },
+    
     methods:{
         generatePassword(){
     
@@ -197,23 +296,71 @@
                 return pwd
             }
             this.password = generate(this.lengthPassword)
-        }
+        },
+         handleSave(){
+            this.save.push({
+                name: this.name,
+                email: this.email,
+                lengthPassword: this.lengthPassword,
+                password:this.password,
+                select_the_state: this.select_the_state,
+                radioGroup: this.radioGroup,
+                checkBoxes: this.checkBoxes,
+            })
+            console.log(this.save)
+            },
+
+        deleteUser(id){
+            this.save.splice(id,1)
+        },
+        editUser(id){
+      // console.log(this.save[id].name);
+      this.rowId = id
+      this.name = this.save[id].name
+      this.email = this.save[id].email
+      this.select_the_state = this.save[id].select_the_state
+      this.radioGroup = this.save[id].radioGroup
+      this.checkBoxes = this.save[id].checkBoxes
+      
+      
+      
+      
     },
-    computed:{
-        isButtonClick() {
-            console.log('button click')
-        return (
-            this.name.length == 0 ||
-            this.email.length == 0 ||
-            this.lengthPassword.length == 0 ||
-            this.select_the_state.length == 0 ||
-            this.radioGroup.length == 0 ||
-            this.checkBoxes.length == 0
+    editUpdate(){
+      
+      this.save[this.rowId].id=this.id
+      this.save[this.rowId].name=this.name
+      this.save[this.rowId].email=this.email
+      this.save [this.rowId].select_the_state=this.select_the_state
+      this.save [this.rowId].radioGroup=this.radioGroup
+      this.save[this.rowId].checkBoxes=this.checkBoxes
+      
+      
+      
+      
+    },
+
+             
+    
+    // computed:{
+        // isButtonClick() {
+        // return (
+        //     this.name.length == 0 ||
+        //     this.email.length == 0 ||
+        //     this.lengthPassword.length == 0 ||
+        //     this.select_the_state.length == 0 ||
+        //     this.radioGroup.length == 0 ||
+        //     this.checkBoxes.length == 0
           
             
-            )
-          }
-        },
+        //     )
+        //   }
+        // },
 
-        }
+          
+           
+        
+       
+
+    }}
             </script>
